@@ -1,0 +1,278 @@
+body, html {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+#video-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+video {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+    z-index: 0;
+}
+
+#title-intro { 
+    display: none;
+    position: absolute;
+    color: black;
+    font-size: 3vw;
+    font-family: "template-gothic", sans-serif;
+    font-weight: 1000;
+    font-style: normal;
+    z-index: 1;
+    opacity: 0;
+    transition: opacity 2s;
+}
+
+.fade-out {
+    animation: fadeOutAnimation 2s forwards; 
+}
+
+@keyframes fadeOutAnimation {
+    from {
+        opacity: 1; 
+    }
+    to {
+        opacity: 0; 
+    }
+}
+
+
+#enter {
+    display: none;
+    position: absolute;
+    color: black;
+    font-size: 2.5vw;
+    font-family: "template-gothic", sans-serif;
+    font-weight: 600;
+    font-style: normal;
+    z-index: 1;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 2s;
+}
+
+#enter::after {
+    content: ""; 
+    position: absolute; 
+    bottom: -5px; 
+    left: 0;
+    width: 100%;
+    height: 5px; 
+    background: black;
+    filter: blur(10px); 
+    transition: opacity 0.3s; 
+    opacity: 0; 
+}
+
+#enter:hover::after {
+    opacity: 1; 
+}
+
+#skip {
+    display: none;
+    position: absolute;
+    color: black;
+    font-size: 2.5vw;
+    font-family: "template-gothic", sans-serif;
+    font-weight: 1000;
+    font-style: normal;
+    z-index: 1;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 2s
+}
+
+#skip::after {
+    content: ""; 
+    position: absolute; 
+    bottom: -5px; 
+    left: 0;
+    width: 100%;
+    height: 5px; 
+    background: black;
+    filter: blur(10px); 
+    transition: opacity 0.3s; 
+    opacity: 0; 
+}
+
+#skip:hover::after {
+    opacity: 1; 
+}
+
+#light {
+    position: absolute;
+    color: black;
+    font-size: 3vw;
+    font-family: "template-gothic", sans-serif;
+    font-weight: 1000;
+    font-style: normal;
+    z-index: 1;
+    cursor: pointer;
+}
+
+#light::after {
+    content: ""; 
+    position: absolute; 
+    bottom: -5px; 
+    left: 0;
+    width: 100%;
+    height: 5px; 
+    background: black;
+    filter: blur(10px); 
+    transition: opacity 0.3s; 
+    opacity: 0; 
+}
+
+#light:hover::after {
+    opacity: 1; 
+}
+
+#dark {
+    position: absolute;
+    color: white;
+    font-size: 3vw;
+    font-family: "template-gothic", sans-serif;
+    font-weight: 1000;
+    font-style: normal;
+    z-index: 1;
+    cursor: pointer;
+}
+
+#dark::after {
+    content: ""; 
+    position: absolute; 
+    bottom: -5px; 
+    left: 0;
+    width: 100%;
+    height: 5px; 
+    background: white;
+    filter: blur(10px); 
+    transition: opacity 0.3s; 
+    opacity: 0; 
+}
+
+#dark:hover::after {
+    opacity: 1; 
+}
+
+#dark-1 {
+    position: absolute;
+    color: white;
+    font-size: 3vw;
+    font-family: "template-gothic", sans-serif;
+    font-weight: 1000;
+    font-style: normal;
+    z-index: 1;
+    cursor: pointer;
+}
+
+#dark-1::after {
+    content: ""; 
+    position: absolute; 
+    bottom: -5px; 
+    left: 0;
+    width: 100%;
+    height: 5px; 
+    background: white;
+    filter: blur(10px); 
+    transition: opacity 0.3s; 
+    opacity: 0; 
+}
+
+#dark-1:hover::after {
+    opacity: 1; 
+}
+
+#dark-3 {
+    position: absolute;
+    color: white;
+    font-size: 3vw;
+    font-family: "template-gothic", sans-serif;
+    font-weight: 1000;
+    font-style: normal;
+    z-index: 1;
+    cursor: pointer;
+}
+
+#dark-3::after {
+    content: ""; 
+    position: absolute; 
+    bottom: -5px; 
+    left: 0;
+    width: 100%;
+    height: 5px; 
+    background: white;
+    filter: blur(10px); 
+    transition: opacity 0.3s; 
+    opacity: 0; 
+}
+
+#dark-3:hover::after {
+    opacity: 1; 
+}
+
+#light-2 {
+    position: absolute;
+    color: white;
+    font-size: 3vw;
+    font-family: "template-gothic", sans-serif;
+    font-weight: 1000;
+    font-style: normal;
+    z-index: 1;
+    cursor: pointer;
+}
+
+#light-2::after {
+    content: ""; 
+    position: absolute; 
+    bottom: -5px; 
+    left: 0;
+    width: 100%;
+    height: 5px; 
+    background: white;
+    filter: blur(10px); 
+    transition: opacity 0.3s; 
+    opacity: 0; 
+}
+
+#light-2:hover::after {
+    opacity: 1; 
+}
+
+#light-3 {
+    position: absolute;
+    color: white;
+    font-size: 3vw;
+    font-family: "template-gothic", sans-serif;
+    font-weight: 1000;
+    font-style: normal;
+    z-index: 1;
+    cursor: pointer;
+}
+
+#light-3::after {
+    content: ""; 
+    position: absolute; 
+    bottom: -5px; 
+    left: 0;
+    width: 100%;
+    height: 5px; 
+    background: white;
+    filter: blur(10px); 
+    transition: opacity 0.3s; 
+    opacity: 0; 
+}
+
+#light-3:hover::after {
+    opacity: 1; 
+}
