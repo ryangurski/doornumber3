@@ -249,7 +249,7 @@ document.addEventListener('DOMContentLoaded', function() {
             lightAudio.play();
             lightVideo.play();
             Array.from(choice).forEach(function(element) {
-                element.style.transition = 'opacity 2s'; 
+                element.style.transition = 'opacity 1s'; 
                 element.style.opacity = '0';
                 setTimeout(function() {
                     element.style.display = 'none';
@@ -268,7 +268,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
     darkVideo.addEventListener('ended', function() {
         Array.from(darkchoice).forEach(function(element) {
+            element.style.opacity = '0';
             element.style.display = 'block';
+            setTimeout(function() {
+                element.style.transition = 'opacity 1s'; 
+                element.style.opacity = '1';
+            }, 1000); 
         });
     });
 
@@ -282,7 +287,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
     lightVideo.addEventListener('ended', function() {
         Array.from(lightchoice).forEach(function(element) {
+            element.style.opacity = '0';
             element.style.display = 'block';
+            setTimeout(function() {
+                element.style.transition = 'opacity 1s'; 
+                element.style.opacity = '1';
+            }, 1000); 
         });
     });
 
@@ -297,7 +307,11 @@ document.addEventListener('DOMContentLoaded', function() {
             audio1.play();
             video1.play();
             Array.from(darkchoice).forEach(function(element) {
-                element.style.display = 'none';
+                element.style.transition = 'opacity 1s'; 
+                element.style.opacity = '0';
+                setTimeout(function() {
+                    element.style.display = 'none';
+                }, 1000); 
             });
         }
     });
@@ -313,7 +327,11 @@ document.addEventListener('DOMContentLoaded', function() {
             audio3.play();
             video3dark.play();
             Array.from(darkchoice).forEach(function(element) {
-                element.style.display = 'none';
+                element.style.transition = 'opacity 1s'; 
+                element.style.opacity = '0';
+                setTimeout(function() {
+                    element.style.display = 'none';
+                }, 1000); 
             });
         }
     });
