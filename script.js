@@ -127,6 +127,7 @@ document.addEventListener('DOMContentLoaded', function() {
         light3.style.transform = 'translate(-50%, -50%)';
     }
 
+
     Array.from(choice).forEach(function(element) {
         element.style.display = 'none';
     });
@@ -170,41 +171,27 @@ document.addEventListener('DOMContentLoaded', function() {
         playEnter.style.display = 'none';
         title.style.display = 'none';
     
-        if (lightAudio.readyState >= 2) {
-            mainAudio.currentTime = mainAudio.duration;
-        } else {
-            lightAudio.addEventListener('loadedmetadata', function onLoadedMetadata() {
-                mainAudio.currentTime = mainAudio.duration;
-                mainAudio.removeEventListener('loadedmetadata', onLoadedMetadata);
-            });
+        // Function to handle the currentTime setting
+        function setMediaCurrentTime(mediaElement, targetElement) {
+            if (mediaElement.readyState >= 2) {
+                targetElement.currentTime = targetElement.duration;  // Skip to end
+                targetElement.play();  // Ensure playback is continued
+            } else {
+                mediaElement.addEventListener('loadedmetadata', function onLoadedMetadata() {
+                    targetElement.currentTime = targetElement.duration;
+                    targetElement.play();  // Ensure playback is continued
+                    mediaElement.removeEventListener('loadedmetadata', onLoadedMetadata);
+                });
+            }
         }
     
-        if (darkAudio.readyState >= 2) {
-            mainVideo.currentTime = mainVideo.duration;
-        } else {
-            darkAudio.addEventListener('loadedmetadata', function onLoadedMetadata() {
-                mainVideo.currentTime = mainVideo.duration;
-                mainVideo.removeEventListener('loadedmetadata', onLoadedMetadata);
-            });
-        }
-
-        if (lightVideo.readyState >= 2) {
-            mainVideo.currentTime = mainVideo.duration;
-        } else {
-            lightVideo.addEventListener('loadedmetadata', function onLoadedMetadata() {
-                mainVideo.currentTime = mainVideo.duration;
-                mainVideo.removeEventListener('loadedmetadata', onLoadedMetadata);
-            });
-        }
-
-        if (darkVideo.readyState >= 2) {
-            mainVideo.currentTime = mainVideo.duration;
-        } else {
-            darkVideo.addEventListener('loadedmetadata', function onLoadedMetadata() {
-                mainVideo.currentTime = mainVideo.duration;
-                mainVideo.removeEventListener('loadedmetadata', onLoadedMetadata);
-            });
-        }
+        // Set current time for audio elements
+        setMediaCurrentTime(lightAudio, mainAudio);
+        setMediaCurrentTime(darkAudio, mainAudio);
+    
+        // Set current time for video elements
+        setMediaCurrentTime(lightVideo, mainVideo);
+        setMediaCurrentTime(darkVideo, mainVideo);
     });
 
     mainVideo.addEventListener('timeupdate', function() {
