@@ -172,6 +172,8 @@ document.addEventListener('DOMContentLoaded', function() {
         title.style.display = 'none';
     
         function setMediaCurrentTime(mediaElement, targetElement) {
+            targetElement.pause();
+    
             if (mediaElement.readyState >= 2 || mediaElement.paused) {
                 targetElement.currentTime = targetElement.duration;  
                 targetElement.play();  
@@ -183,7 +185,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
             }
         }
-
+    
         setMediaCurrentTime(lightAudio, mainAudio);
         setMediaCurrentTime(darkAudio, mainAudio);
         setMediaCurrentTime(lightVideo, mainVideo);
