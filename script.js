@@ -171,25 +171,21 @@ document.addEventListener('DOMContentLoaded', function() {
         playEnter.style.display = 'none';
         title.style.display = 'none';
     
-        // Function to handle the currentTime setting
         function setMediaCurrentTime(mediaElement, targetElement) {
-            if (mediaElement.readyState >= 2) {
-                targetElement.currentTime = targetElement.duration;  // Skip to end
-                targetElement.play();  // Ensure playback is continued
+            if (mediaElement.readyState >= 2 || mediaElement.paused) {
+                targetElement.currentTime = targetElement.duration;  
+                targetElement.play();  
             } else {
-                mediaElement.addEventListener('loadedmetadata', function onLoadedMetadata() {
+                mediaElement.addEventListener('canplay', function onCanPlay() {
                     targetElement.currentTime = targetElement.duration;
-                    targetElement.play();  // Ensure playback is continued
-                    mediaElement.removeEventListener('loadedmetadata', onLoadedMetadata);
+                    targetElement.play();  
+                    mediaElement.removeEventListener('canplay', onCanPlay);
                 });
             }
         }
-    
-        // Set current time for audio elements
+
         setMediaCurrentTime(lightAudio, mainAudio);
         setMediaCurrentTime(darkAudio, mainAudio);
-    
-        // Set current time for video elements
         setMediaCurrentTime(lightVideo, mainVideo);
         setMediaCurrentTime(darkVideo, mainVideo);
     });
