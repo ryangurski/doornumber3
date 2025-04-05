@@ -171,26 +171,24 @@ document.addEventListener('DOMContentLoaded', function() {
         playEnter.style.display = 'none';
         title.style.display = 'none';
     
-        function setMediaCurrentTime(mediaElement, targetElement) {
-            targetElement.pause();
-    
-            if (mediaElement.readyState >= 2 || mediaElement.paused) {
-                targetElement.currentTime = targetElement.duration;  
-                targetElement.play();  
+        // Make sure the main video is loaded enough to manipulate
+        function skipToEnd() {
+            if (mainVideo.readyState >= 2) {
+                // Set to slightly before the end to ensure 'ended' event fires
+                mainVideo.currentTime = Math.max(0, mainVideo.duration - 0.1);
+                mainAudio.currentTime = Math.max(0, mainAudio.duration - 0.1);
+                
+                mainVideo.play();
+                mainAudio.play();
             } else {
-                mediaElement.addEventListener('canplay', function onCanPlay() {
-                    targetElement.currentTime = targetElement.duration;
-                    targetElement.play();  
-                    mediaElement.removeEventListener('canplay', onCanPlay);
-                });
+                // If not ready, wait a bit and try again
+                setTimeout(skipToEnd, 100);
             }
         }
-    
-        setMediaCurrentTime(lightAudio, mainAudio);
-        setMediaCurrentTime(darkAudio, mainAudio);
-        setMediaCurrentTime(lightVideo, mainVideo);
-        setMediaCurrentTime(darkVideo, mainVideo);
+        
+        skipToEnd();
     });
+    
 
     mainVideo.addEventListener('timeupdate', function() {
         if (mainVideo.style.display === 'block') {
