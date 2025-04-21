@@ -165,38 +165,35 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 2000);
     });
 
-    skip.addEventListener('click', function() {
-        mainVideo.style.display = 'block';
-        skip.style.display = 'none';
-        playEnter.style.display = 'none';
-        title.style.display = 'none';
-    
-        // Make sure the main video is loaded enough to manipulate
-        function skipToEnd() {
-            if (mainVideo.readyState >= 2) {
-                // Set to slightly before the end to ensure 'ended' event fires
-                mainVideo.currentTime = Math.max(0, mainVideo.duration - 0.1);
-                mainAudio.currentTime = Math.max(0, mainAudio.duration - 0.1);
-                
-                mainVideo.play();
-                mainAudio.play();
-            } else {
-                // If not ready, wait a bit and try again
-                setTimeout(skipToEnd, 100);
-            }
-        }
-        
-        skipToEnd();
-    });
-    
+skip.addEventListener('click', function () {
+    mainVideo.style.display = 'block';
+    skip.style.display = 'none';
+    playEnter.style.display = 'none';
+    title.style.display = 'none';
 
-    mainVideo.addEventListener('timeupdate', function() {
-        if (mainVideo.style.display === 'block') {
-            Array.from(choice).forEach(function(element) {
-                element.style.display = 'none';
-            });
-        }
-    });
+
+    mainVideo.pause();
+    mainAudio.pause();
+
+    mainVideo.currentTime = mainVideo.duration;
+    mainAudio.currentTime = mainAudio.duration;
+
+    mainVideo.dispatchEvent(new Event('ended'));
+});
+
+
+mainVideo.addEventListener('ended', function () {
+    lightText.style.display = 'block';
+    darkText.style.display = 'block';
+});
+
+mainVideo.addEventListener('timeupdate', function () {
+    if (!mainVideo.ended && !mainVideo.paused && mainVideo.style.display === 'block') {
+        Array.from(choice).forEach(function (element) {
+            element.style.display = 'none';
+        });
+    }
+});
 
     mainVideo.addEventListener('ended', function() {
         Array.from(choice).forEach(function(element) {
