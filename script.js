@@ -25,6 +25,16 @@ document.addEventListener('DOMContentLoaded', function() {
     var darkchoice = document.querySelectorAll('#dark-1, #dark-3');
     var lightchoice = document.querySelectorAll('#light-2, #light-3');
 
+    var choicesShown = false;
+
+    var allVideos = [mainVideo, darkVideo, lightVideo, video1, video2, video3dark, video3light];
+    allVideos.forEach(function(video) {
+        video.setAttribute('playsinline', '');
+        video.setAttribute('webkit-playsinline', '');
+        video.setAttribute('muted', '');
+        video.muted = true;
+    });
+
     function adjustVideoHeight() {
         var windowHeight = window.innerHeight;
         var windowWidth = window.innerWidth;
@@ -127,6 +137,19 @@ document.addEventListener('DOMContentLoaded', function() {
         light3.style.transform = 'translate(-50%, -50%)';
     }
 
+    function showMainChoices() {
+        if (choicesShown) return;
+        choicesShown = true;
+        
+        Array.from(choice).forEach(function(element) {
+            element.style.opacity = '0';
+            element.style.display = 'block';
+            setTimeout(function() {
+                element.style.transition = 'opacity 1s'; 
+                element.style.opacity = '1';
+            }, 100); 
+        });
+    }
 
     Array.from(choice).forEach(function(element) {
         element.style.display = 'none';
@@ -148,6 +171,8 @@ document.addEventListener('DOMContentLoaded', function() {
     video3light.style.display = 'none';
 
     playEnter.addEventListener('click', function() {
+        choicesShown = false;
+        mainVideo.muted = false;
         mainAudio.play();
         mainVideo.play();
         mainVideo.style.display = 'block';
@@ -165,51 +190,57 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 2000);
     });
 
-skip.addEventListener('click', function () {
-    mainVideo.style.display = 'block';
-    skip.style.display = 'none';
-    playEnter.style.display = 'none';
-    title.style.display = 'none';
-
-
-    mainVideo.pause();
-    mainAudio.pause();
-
-    mainVideo.currentTime = mainVideo.duration;
-    mainAudio.currentTime = mainAudio.duration;
-
-    mainVideo.dispatchEvent(new Event('ended'));
-});
-
-
-mainVideo.addEventListener('ended', function () {
-    lightText.style.display = 'block';
-    darkText.style.display = 'block';
-});
-
-mainVideo.addEventListener('timeupdate', function () {
-    if (!mainVideo.ended && !mainVideo.paused && mainVideo.style.display === 'block') {
-        Array.from(choice).forEach(function (element) {
-            element.style.display = 'none';
-        });
-    }
-});
-
-    mainVideo.addEventListener('ended', function() {
-        Array.from(choice).forEach(function(element) {
-            element.style.opacity = '0';
-            element.style.display = 'block';
+    skip.addEventListener('click', function () {
+        choicesShown = false;
+        
+        mainVideo.load();
+        
+        mainVideo.addEventListener('loadedmetadata', function seekToEnd() {
+            skip.classList.add('fade-out');
+            playEnter.classList.add('fade-out');
+            title.classList.add('fade-out');
+            
             setTimeout(function() {
-                element.style.transition = 'opacity 1s'; 
-                element.style.opacity = '1';
-            }, 1000); 
-        });
+                skip.style.display = 'none';
+                playEnter.style.display = 'none';
+                title.style.display = 'none';
+                
+                mainVideo.style.display = 'block';
+                
+                mainVideo.currentTime = mainVideo.duration - 0.1;
+                mainAudio.currentTime = mainAudio.duration;
+                
+                mainVideo.pause();
+                mainAudio.pause();
+                
+                requestAnimationFrame(function() {
+                    setTimeout(function() {
+                        showMainChoices();
+                    }, 500);
+                });
+            }, 1000);
+            
+            mainVideo.removeEventListener('loadedmetadata', seekToEnd);
+        }, { once: true });
+    });
+
+    mainVideo.addEventListener('ended', function () {
+        showMainChoices();
+    });
+
+    mainVideo.addEventListener('timeupdate', function () {
+        if (!mainVideo.ended && !mainVideo.paused && mainVideo.style.display === 'block') {
+            Array.from(choice).forEach(function (element) {
+                element.style.display = 'none';
+            });
+        }
     });
 
     dark.addEventListener('click', function() {
         if (darkVideo.style.display === 'none') {
             darkVideo.style.display = 'block';
             mainVideo.style.display = 'none';
+            darkVideo.muted = false;
             darkAudio.play();
             darkVideo.play();
             Array.from(choice).forEach(function(element) {
@@ -226,6 +257,7 @@ mainVideo.addEventListener('timeupdate', function () {
         if (lightVideo.style.display === 'none') {
             lightVideo.style.display = 'block';
             mainVideo.style.display = 'none';
+            lightVideo.muted = false;
             lightAudio.play();
             lightVideo.play();
             Array.from(choice).forEach(function(element) {
@@ -284,6 +316,7 @@ mainVideo.addEventListener('timeupdate', function () {
         if (video1.style.display === 'none') {
             video1.style.display = 'block';
             darkVideo.style.display = 'none';
+            video1.muted = false;
             audio1.play();
             video1.play();
             Array.from(darkchoice).forEach(function(element) {
@@ -304,6 +337,7 @@ mainVideo.addEventListener('timeupdate', function () {
         if (video3dark.style.display === 'none') {
             video3dark.style.display = 'block';
             darkVideo.style.display = 'none';
+            video3dark.muted = false;
             audio3.play();
             video3dark.play();
             Array.from(darkchoice).forEach(function(element) {
@@ -324,6 +358,7 @@ mainVideo.addEventListener('timeupdate', function () {
         if (video2.style.display === 'none') {
             video2.style.display = 'block';
             lightVideo.style.display = 'none';
+            video2.muted = false;
             audio2.play();
             video2.play();
             Array.from(lightchoice).forEach(function(element) {
@@ -340,6 +375,7 @@ mainVideo.addEventListener('timeupdate', function () {
         if (video3light.style.display === 'none') {
             video3light.style.display = 'block';
             lightVideo.style.display = 'none';
+            video3light.muted = false;
             audio3.play();
             video3light.play();
             Array.from(lightchoice).forEach(function(element) {

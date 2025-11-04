@@ -4,6 +4,7 @@ body, html {
     width: 100%;
     height: 100%;
     overflow: hidden;
+    position:fixed;
 }
 #video-container {
     position: relative;
@@ -275,4 +276,10 @@ video {
 
 #light-3:hover::after {
     opacity: 1; 
+}
+
+@media screen and (orientation: landscape) {
+    html {
+        transform: rotate(0deg);
+    }
 }
