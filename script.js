@@ -172,7 +172,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     playEnter.addEventListener('click', function() {
         choicesShown = false;
-        mainVideo.muted = false;
         mainAudio.play();
         mainVideo.play();
         mainVideo.style.display = 'block';
@@ -240,7 +239,6 @@ document.addEventListener('DOMContentLoaded', function() {
         if (darkVideo.style.display === 'none') {
             darkVideo.style.display = 'block';
             mainVideo.style.display = 'none';
-            darkVideo.muted = false;
             darkAudio.play();
             darkVideo.play();
             Array.from(choice).forEach(function(element) {
@@ -257,7 +255,6 @@ document.addEventListener('DOMContentLoaded', function() {
         if (lightVideo.style.display === 'none') {
             lightVideo.style.display = 'block';
             mainVideo.style.display = 'none';
-            lightVideo.muted = false;
             lightAudio.play();
             lightVideo.play();
             Array.from(choice).forEach(function(element) {
@@ -316,7 +313,6 @@ document.addEventListener('DOMContentLoaded', function() {
         if (video1.style.display === 'none') {
             video1.style.display = 'block';
             darkVideo.style.display = 'none';
-            video1.muted = false;
             audio1.play();
             video1.play();
             Array.from(darkchoice).forEach(function(element) {
@@ -337,7 +333,6 @@ document.addEventListener('DOMContentLoaded', function() {
         if (video3dark.style.display === 'none') {
             video3dark.style.display = 'block';
             darkVideo.style.display = 'none';
-            video3dark.muted = false;
             audio3.play();
             video3dark.play();
             Array.from(darkchoice).forEach(function(element) {
@@ -358,7 +353,6 @@ document.addEventListener('DOMContentLoaded', function() {
         if (video2.style.display === 'none') {
             video2.style.display = 'block';
             lightVideo.style.display = 'none';
-            video2.muted = false;
             audio2.play();
             video2.play();
             Array.from(lightchoice).forEach(function(element) {
@@ -375,7 +369,6 @@ document.addEventListener('DOMContentLoaded', function() {
         if (video3light.style.display === 'none') {
             video3light.style.display = 'block';
             lightVideo.style.display = 'none';
-            video3light.muted = false;
             audio3.play();
             video3light.play();
             Array.from(lightchoice).forEach(function(element) {
