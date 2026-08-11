@@ -33,14 +33,6 @@ document.addEventListener('DOMContentLoaded', function() {
         video.setAttribute('webkit-playsinline', '');
         video.setAttribute('muted', '');
         video.muted = true;
-
-        const loadingScreen = document.querySelector('.loading-screen');
-    
-        loadingScreen.classList.add('hidden');
-    
-        loadingScreen.addEventListener('transitionend', function() {
-        loadingScreen.remove();
-        }, { once: true }); 
     });
 
     function adjustVideoHeight() {
