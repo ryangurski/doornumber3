@@ -1,65 +1,34 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
     <head>
-        <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
         <title>Door-Number3</title>
-        <link rel="stylesheet" type="text/css" href="style.css" />
-        <link rel="stylesheet" href="https://use.typekit.net/jvn4wyc.css">
+        <link rel="stylesheet" type="text/css" href="style.css">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Winky+Rough:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet">
+        <script src="https://player.vimeo.com/api/player.js"></script>
     </head>
-
     <body>
-        <div id="title-intro">Door Number 3</div>
-        <div id="enter">Enter</div>
-        <div id="skip">Skip</div>
-        <div id="dark">Dark</div>
-        <div id="light">Light</div>
-        <div id="dark-1">1</div>
-        <div id="light-2">2</div>
-        <div id="dark-3">3</div>
-        <div id="light-3">3</div>
-        <div id="video-container">
-            <video id="main" preload="auto" muted playsinline webkit-playsinline>
-                <source src="video/main.mp4" type="video/mp4">
-            </video>
-            <video id="dark-video" preload="auto" muted playsinline webkit-playsinline>
-                <source src="video/dark.mp4" type="video/mp4">
-            </video>
-            <video id="light-video" preload="auto" muted playsinline webkit-playsinline>
-                <source src="video/light.mp4" type="video/mp4">
-            </video>
-            <video id="ending1" preload="auto" muted playsinline webkit-playsinline>
-                <source src="video/door1.mp4" type="video/mp4">
-            </video>
-            <video id="ending3-dark" preload="auto" muted playsinline webkit-playsinline>
-                <source src="video/door3-dark.mp4" type="video/mp4">
-            </video>
-            <video id="ending2" preload="auto" muted playsinline webkit-playsinline>
-                <source src="video/door2.mp4" type="video/mp4">
-            </video> 
-            <video id="ending3-light" preload="auto" muted playsinline webkit-playsinline>
-                <source src="video/door3-light.mp4" type="video/mp4">
-            </video>
+        <div id="app-stage">
+            <div id="title-intro">Door Number 3</div>
+            <div id="enter">Enter</div>
+            <div id="skip">Skip</div>
+            <div id="dark">Dark</div>
+            <div id="light">Light</div>
+            <div id="dark-1">1</div>
+            <div id="light-2">2</div>
+            <div id="dark-3">3</div>
+            <div id="light-3">3</div>
+
+            <iframe id="vimeo-iframe" 
+                src="https://player.vimeo.com/video/1219583671?api=1&amp;playsinline=1&amp;title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;controls=0" 
+                allow="autoplay; fullscreen; picture-in-picture" 
+                playsinline
+                title="Door Number 3">
+            </iframe>
         </div>
-        <audio id="main-audio" preload="auto">
-            <source src="audio/main-audio.wav" type="audio/wav">
-        </audio>
-        <audio id="dark1-audio" preload="auto">
-            <source src="audio/dark1-audio.wav" type="audio/wav">
-        </audio>
-        <audio id="light2-audio" preload="auto">
-            <source src="audio/light2-audio.wav" type="audio/wav">
-        </audio>
-        <audio id="door1-audio" preload="auto">
-            <source src="audio/door1-audio.wav" type="audio/wav">
-        </audio>
-        <audio id="door2-audio" preload="auto">
-            <source src="audio/door2-audio.wav" type="audio/wav">
-        </audio>
-        <audio id="door3-audio" preload="auto">
-            <source src="audio/door3-audio.wav" type="audio/wav">
-        </audio>
         <script src="script.js"></script>
     </body>
 </html>

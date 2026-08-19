@@ -1,389 +1,265 @@
 document.addEventListener('DOMContentLoaded', function() {
-    var mainVideo = document.getElementById('main');
-    var mainAudio = document.getElementById('main-audio');
-    var darkVideo = document.getElementById('dark-video');
-    var darkAudio = document.getElementById('dark1-audio');
-    var lightVideo = document.getElementById('light-video');
-    var lightAudio = document.getElementById('light2-audio');
-    var video1 = document.getElementById('ending1');
-    var audio1 = document.getElementById('door1-audio');
-    var video2 = document.getElementById('ending2');
-    var audio2 = document.getElementById('door2-audio');
-    var video3dark = document.getElementById('ending3-dark');
-    var audio3 = document.getElementById('door3-audio');
-    var video3light = document.getElementById('ending3-light');
-    var title = document.getElementById('title-intro');
-    var playEnter = document.getElementById('enter');
-    var skip = document.getElementById('skip');
-    var choice = document.querySelectorAll('#light, #dark');
-    var light = document.getElementById('light');
-    var dark = document.getElementById('dark');
-    var door1 = document.getElementById('dark-1');
-    var door2 = document.getElementById('light-2');
-    var dark3 = document.getElementById('dark-3');
-    var light3 = document.getElementById('light-3');
-    var darkchoice = document.querySelectorAll('#dark-1, #dark-3');
-    var lightchoice = document.querySelectorAll('#light-2, #light-3');
+    const title = document.getElementById('title-intro');
+    const playEnter = document.getElementById('enter');
+    const skip = document.getElementById('skip');
+    const light = document.getElementById('light');
+    const dark = document.getElementById('dark');
+    const door1 = document.getElementById('dark-1');
+    const door2 = document.getElementById('light-2');
+    const dark3 = document.getElementById('dark-3');
+    const light3 = document.getElementById('light-3');
+    const choice = document.querySelectorAll('#light, #dark');
+    const darkchoice = document.querySelectorAll('#dark-1, #dark-3');
+    const lightchoice = document.querySelectorAll('#light-2, #light-3');
 
-    var choicesShown = false;
+    const overlay = document.createElement('div');
+    overlay.id = 'fade-overlay';
+    overlay.style.position = 'fixed';
+    overlay.style.top = '0';
+    overlay.style.left = '0';
+    overlay.style.width = '100vw';
+    overlay.style.height = '100vh';
+    overlay.style.pointerEvents = 'none';
+    overlay.style.zIndex = '9999';
+    overlay.style.transition = 'opacity 1s ease';
+    overlay.style.backgroundColor = 'white';
+    overlay.style.opacity = '1';
+    document.body.appendChild(overlay);
 
-    var allVideos = [mainVideo, darkVideo, lightVideo, video1, video2, video3dark, video3light];
-    allVideos.forEach(function(video) {
-        video.setAttribute('playsinline', '');
-        video.setAttribute('webkit-playsinline', '');
-        video.setAttribute('muted', '');
-        video.muted = true;
-    });
+    const MAIN_CHOICE_TIME = 232; 
+    const DARK_PATH_CHOICE_TIME = 247; 
+    const DARK_DOOR1_END_TIME = 267; 
+    const DARK_DOOR3_START_TIME = 270; 
+    const DARK_DOOR3_END_TIME = 299; 
+    const LIGHT_PATH_START_TIME = 300; 
+    const LIGHT_PATH_CHOICE_TIME = 314.7;
+    const LIGHT_DOOR2_END_TIME = 334; 
+    const LIGHT_DOOR3_START_TIME = 334; 
+    const LIGHT_DOOR3_END_TIME = 362;
 
-    function adjustVideoHeight() {
-        var windowHeight = window.innerHeight;
-        var windowWidth = window.innerWidth;
-        var aspectRatio = 16 / 9;
-        var adjustedHeight = windowHeight;
-        var adjustedWidth = windowHeight * aspectRatio;
+    let mainChoiceHandled = false;
+    let doorChoiceHandled = false;
+    let path = null;
+    let targetEnd = null;
+    let isSeeking = false;
+    let expectedSeekTime = null;
+    let fallbackTimer = null;
 
-        if (adjustedWidth > windowWidth) {
-            adjustedWidth = windowWidth;
-            adjustedHeight = windowWidth / aspectRatio;
-        }
+    const iframe = document.getElementById('vimeo-iframe');
+    const player = new Vimeo.Player(iframe);
 
-        var topOffset = (windowHeight - adjustedHeight) / 2;
-
-        document.getElementById('video-container').style.height = adjustedHeight + 'px';
-        document.getElementById('video-container').style.top = topOffset + 'px';
-    }
-
-    function adjustTextPosition() {
-        var windowHeight = window.innerHeight;
-        var videoHeight = document.getElementById('video-container').offsetHeight;
-        var textVerticalCenter = (windowHeight - videoHeight) / 2;
-    
-        if (mainVideo.style.display === 'block' ||
-            darkVideo.style.display === 'block' ||
-            lightVideo.style.display === 'block' ||
-            video1.style.display === 'block' ||
-            video2.style.display === 'block' ||
-            video3dark.style.display === 'block' ||
-            video3light.style.display === 'block') {
-            title.style.display = 'none';
-            playEnter.style.display = 'none';
-            skip.style.display = 'none';
-        } else {
-            title.style.top = textVerticalCenter + videoHeight * 0.1 + 'px';
-            title.style.left = '50%';
-            title.style.transform = 'translate(-50%, -50%)';
-            if (title.style.opacity !== '1') { 
-                title.style.opacity = 0;
-            }
-            title.style.display = 'block';
-    
-            setTimeout(function() {
-                if (title.style.opacity !== '1') { 
-                    title.style.opacity = 1;
-                }
-            }, 1000);
-    
-            playEnter.style.top = textVerticalCenter + videoHeight * 0.9 + 'px';
-            playEnter.style.left = '40%';
-            playEnter.style.transform = 'translate(-50%, -50%)';
-            if (playEnter.style.opacity !== '1') { 
-                playEnter.style.opacity = 0;
-            }
-            playEnter.style.display = 'block';
-    
-            setTimeout(function() {
-                if (playEnter.style.opacity !== '1') { 
-                    playEnter.style.opacity = 1;
-                }
-            }, 3000);
-    
-            skip.style.top = textVerticalCenter + videoHeight * 0.9 + 'px';
-            skip.style.left = '60%';
-            skip.style.transform = 'translate(-50%, -50%)';
-            if (skip.style.opacity !== '1') { 
-                skip.style.opacity = 0;
-            }
-            skip.style.display = 'block';
-    
-            setTimeout(function() {
-                if (skip.style.opacity !== '1') { 
-                    skip.style.opacity = 1;
-                }
-            }, 3000);
-        }
-    
-        light.style.top = textVerticalCenter + videoHeight * 0.5 + 'px';
-        light.style.left = '70%';
-        light.style.transform = 'translate(-50%, -50%)';
-    
-        dark.style.top = textVerticalCenter + videoHeight * 0.5 + 'px';
-        dark.style.left = '30%';
-        dark.style.transform = 'translate(-50%, -50%)';
-    
-        door1.style.top = textVerticalCenter + videoHeight * 0.35 + 'px';
-        door1.style.left = '35%';
-        door1.style.transform = 'translate(-50%, -50%)';
-    
-        dark3.style.top = textVerticalCenter + videoHeight * 0.35 + 'px';
-        dark3.style.left = '69%';
-        dark3.style.transform = 'translate(-50%, -50%)';
-    
-        door2.style.top = textVerticalCenter + videoHeight * 0.35 + 'px';
-        door2.style.left = '35%';
-        door2.style.transform = 'translate(-50%, -50%)';
-    
-        light3.style.top = textVerticalCenter + videoHeight * 0.35 + 'px';
-        light3.style.left = '69%';
-        light3.style.transform = 'translate(-50%, -50%)';
-    }
-
-    function showMainChoices() {
-        if (choicesShown) return;
-        choicesShown = true;
-        
-        Array.from(choice).forEach(function(element) {
-            element.style.opacity = '0';
-            element.style.display = 'block';
-            setTimeout(function() {
-                element.style.transition = 'opacity 1s'; 
-                element.style.opacity = '1';
+    function showElements(list) {
+        list.forEach(function(el){ 
+            if (!el) return;
+            el.style.opacity = '0'; 
+            el.style.display = 'block'; 
+            setTimeout(function(){ 
+                el.style.transition = 'opacity 1s'; 
+                el.style.opacity = '1'; 
             }, 100); 
         });
     }
 
-    Array.from(choice).forEach(function(element) {
-        element.style.display = 'none';
-    });
-
-    Array.from(darkchoice).forEach(function(element) {
-        element.style.display = 'none';
-    });
-
-    Array.from(lightchoice).forEach(function(element) {
-        element.style.display = 'none';
-    });
-
-    darkVideo.style.display = 'none';
-    lightVideo.style.display = 'none';
-    video1.style.display = 'none';
-    video3dark.style.display = 'none';
-    video2.style.display = 'none';
-    video3light.style.display = 'none';
-
-    playEnter.addEventListener('click', function() {
-        choicesShown = false;
-        mainAudio.play();
-        mainVideo.play();
-        mainVideo.style.display = 'block';
-        playEnter.classList.add('fade-out');
-        setTimeout(function() {
-            playEnter.style.display = 'none';
-        }, 2000);
-        skip.classList.add('fade-out');
-        setTimeout(function() {
-            skip.style.display = 'none';
-        }, 2000);
-        title.classList.add('fade-out');
-        setTimeout(function() {
-            title.style.display = 'none';
-        }, 2000);
-    });
-
-    skip.addEventListener('click', function () {
-        choicesShown = false;
-        
-        mainVideo.load();
-        
-        mainVideo.addEventListener('loadedmetadata', function seekToEnd() {
-            skip.classList.add('fade-out');
-            playEnter.classList.add('fade-out');
-            title.classList.add('fade-out');
-            
-            setTimeout(function() {
-                skip.style.display = 'none';
-                playEnter.style.display = 'none';
-                title.style.display = 'none';
-                
-                mainVideo.style.display = 'block';
-                
-                mainVideo.currentTime = mainVideo.duration - 0.1;
-                mainAudio.currentTime = mainAudio.duration;
-                
-                mainVideo.pause();
-                mainAudio.pause();
-                
-                requestAnimationFrame(function() {
-                    setTimeout(function() {
-                        showMainChoices();
-                    }, 500);
-                });
-            }, 1000);
-            
-            mainVideo.removeEventListener('loadedmetadata', seekToEnd);
-        }, { once: true });
-    });
-
-    mainVideo.addEventListener('ended', function () {
-        showMainChoices();
-    });
-
-    mainVideo.addEventListener('timeupdate', function () {
-        if (!mainVideo.ended && !mainVideo.paused && mainVideo.style.display === 'block') {
-            Array.from(choice).forEach(function (element) {
-                element.style.display = 'none';
-            });
-        }
-    });
-
-    dark.addEventListener('click', function() {
-        if (darkVideo.style.display === 'none') {
-            darkVideo.style.display = 'block';
-            mainVideo.style.display = 'none';
-            darkAudio.play();
-            darkVideo.play();
-            Array.from(choice).forEach(function(element) {
-                element.style.transition = 'opacity 1s'; 
-                element.style.opacity = '0';
-                setTimeout(function() {
-                    element.style.display = 'none';
-                }, 1000); 
-            });
-        }
-    });
-
-    light.addEventListener('click', function() {
-        if (lightVideo.style.display === 'none') {
-            lightVideo.style.display = 'block';
-            mainVideo.style.display = 'none';
-            lightAudio.play();
-            lightVideo.play();
-            Array.from(choice).forEach(function(element) {
-                element.style.transition = 'opacity 1s'; 
-                element.style.opacity = '0';
-                setTimeout(function() {
-                    element.style.display = 'none';
-                }, 1000); 
-            });
-        }
-    });
-
-    darkVideo.addEventListener('timeupdate', function() {
-        if (darkVideo.style.display === 'block') {
-            Array.from(darkchoice).forEach(function(element) {
-                element.style.display = 'none';
-            });
-        }
-    });
-
-    darkVideo.addEventListener('ended', function() {
-        Array.from(darkchoice).forEach(function(element) {
-            element.style.opacity = '0';
-            element.style.display = 'block';
-            setTimeout(function() {
-                element.style.transition = 'opacity 1s'; 
-                element.style.opacity = '1';
-            }, 1000); 
+    function hideElements(list) {
+        list.forEach(function(el){ 
+            if (!el) return;
+            el.style.transition = 'opacity 1s'; 
+            el.style.opacity = '0'; 
+            setTimeout(function(){ el.style.display = 'none'; }, 1000); 
         });
-    });
-
-    lightVideo.addEventListener('timeupdate', function() {
-        if (lightVideo.style.display === 'block') {
-            Array.from(lightchoice).forEach(function(element) {
-                element.style.display = 'none';
-            });
-        }
-    });
-
-    lightVideo.addEventListener('ended', function() {
-        Array.from(lightchoice).forEach(function(element) {
-            element.style.opacity = '0';
-            element.style.display = 'block';
-            setTimeout(function() {
-                element.style.transition = 'opacity 1s'; 
-                element.style.opacity = '1';
-            }, 1000); 
-        });
-    });
-
-    function reloadPage() {
-        window.location.reload();
     }
 
-    door1.addEventListener('click', function() {
-        if (video1.style.display === 'none') {
-            video1.style.display = 'block';
-            darkVideo.style.display = 'none';
-            audio1.play();
-            video1.play();
-            Array.from(darkchoice).forEach(function(element) {
-                element.style.transition = 'opacity 1s'; 
-                element.style.opacity = '0';
-                setTimeout(function() {
-                    element.style.display = 'none';
-                }, 1000); 
-            });
+    function showMainChoices() { showElements(choice); }
+    function hideMainChoices() { hideElements(choice); }
+
+    function showDoorChoices(which) {
+        if (which === 'dark') showElements(darkchoice);
+        else if (which === 'light') showElements(lightchoice);
+    }
+
+    function hideDoorChoices() {
+        hideElements(darkchoice);
+        hideElements(lightchoice);
+    }
+
+    choice.forEach(function(el){ if (el) el.style.display = 'none'; });
+    darkchoice.forEach(function(el){ if (el) el.style.display = 'none'; });
+    lightchoice.forEach(function(el){ if (el) el.style.display = 'none'; });
+
+    function playNow() {
+        player.setVolume(1).catch(function(){});
+        return player.play().catch(function(){});
+    }
+
+    function performSeek(targetTime, shouldPause = false) {
+        isSeeking = true;
+        expectedSeekTime = targetTime;
+        targetEnd = null;
+
+        if (fallbackTimer) clearTimeout(fallbackTimer);
+        fallbackTimer = setTimeout(function() {
+            isSeeking = false;
+            expectedSeekTime = null;
+        }, 2500);
+
+        return player.setCurrentTime(targetTime).then(function() {
+            if (shouldPause) {
+                return player.pause();
+            } else {
+                return player.play();
+            }
+        });
+    }
+
+    function transitionScreen(color, actionCallback) {
+        overlay.style.backgroundColor = color;
+        overlay.style.opacity = '1';
+        setTimeout(function() {
+            if (actionCallback) actionCallback();
+            setTimeout(function() {
+                overlay.style.opacity = '0';
+            }, 300);
+        }, 1000);
+    }
+
+    function resetToStart(fadeColor = 'white') {
+        path = null;
+        targetEnd = null;
+        mainChoiceHandled = false;
+        doorChoiceHandled = false;
+
+        hideMainChoices();
+        hideDoorChoices();
+
+        transitionScreen(fadeColor, function() {
+            performSeek(0, true).then(function() {
+                const introElements = [title, playEnter, skip].filter(Boolean);
+                introElements.forEach(el => el.classList.remove('fade-out'));
+                showElements(introElements);
+            }).catch(function(){});
+        });
+    }
+
+    playEnter.addEventListener('click', function(){
+        if (title) title.classList.add('fade-out');
+        playEnter.classList.add('fade-out');
+        skip.classList.add('fade-out');
+        
+        playNow();
+        player.setCurrentTime(0).catch(function(){});
+        
+        setTimeout(function(){ 
+            if (playEnter) playEnter.style.display = 'none'; 
+            if (skip) skip.style.display = 'none'; 
+            if (title) title.style.display = 'none'; 
+        }, 1000);
+    });
+
+    skip.addEventListener('click', function(){
+        if (title) title.classList.add('fade-out');
+        playEnter.classList.add('fade-out');
+        skip.classList.add('fade-out');
+        
+        mainChoiceHandled = true;
+        path = null;
+
+        playNow().then(function() {
+            return performSeek(MAIN_CHOICE_TIME, true);
+        }).then(function() {
+            showMainChoices();
+        }).catch(function() {
+            showMainChoices();
+        });
+
+        setTimeout(function(){ 
+            if (playEnter) playEnter.style.display = 'none'; 
+            if (skip) skip.style.display = 'none'; 
+            if (title) title.style.display = 'none'; 
+        }, 1000);
+    });
+
+    player.on('timeupdate', function(data){
+        const s = data.seconds;
+
+        if (isSeeking) {
+            if (expectedSeekTime !== null && Math.abs(s - expectedSeekTime) < 2.0) {
+                isSeeking = false;
+                expectedSeekTime = null;
+                if (fallbackTimer) clearTimeout(fallbackTimer);
+            } else {
+                return;
+            }
+        }
+
+        if (!mainChoiceHandled && s >= MAIN_CHOICE_TIME) {
+            mainChoiceHandled = true;
+            player.pause().then(function(){ showMainChoices(); });
+            return;
+        }
+
+        if (path === 'dark' && !doorChoiceHandled && s >= DARK_PATH_CHOICE_TIME) {
+            doorChoiceHandled = true;
+            player.pause().then(function(){ showDoorChoices('dark'); });
+            return;
+        }
+
+        if (path === 'light' && !doorChoiceHandled && s >= LIGHT_PATH_CHOICE_TIME) {
+            doorChoiceHandled = true;
+            player.pause().then(function(){ showDoorChoices('light'); });
+            return;
+        }
+
+        if (targetEnd !== null && s >= targetEnd) {
+            const fadeColor = (path === 'dark') ? 'black' : 'white';
+            resetToStart(fadeColor);
         }
     });
 
-    video1.addEventListener('ended', function() {
-        reloadPage();
+    dark.addEventListener('click', function(){
+        hideMainChoices();
+        path = 'dark';
+        targetEnd = null;
+        playNow();
     });
 
-    dark3.addEventListener('click', function() {
-        if (video3dark.style.display === 'none') {
-            video3dark.style.display = 'block';
-            darkVideo.style.display = 'none';
-            audio3.play();
-            video3dark.play();
-            Array.from(darkchoice).forEach(function(element) {
-                element.style.transition = 'opacity 1s'; 
-                element.style.opacity = '0';
-                setTimeout(function() {
-                    element.style.display = 'none';
-                }, 1000); 
-            });
-        }
+    light.addEventListener('click', function(){
+        hideMainChoices();
+        path = 'light';
+        doorChoiceHandled = false;
+        performSeek(LIGHT_PATH_START_TIME, false);
     });
 
-    video3dark.addEventListener('ended', function() {
-        reloadPage();
+    door1.addEventListener('click', function(){
+        hideDoorChoices();
+        targetEnd = DARK_DOOR1_END_TIME;
+        playNow();
     });
 
-    door2.addEventListener('click', function() {
-        if (video2.style.display === 'none') {
-            video2.style.display = 'block';
-            lightVideo.style.display = 'none';
-            audio2.play();
-            video2.play();
-            Array.from(lightchoice).forEach(function(element) {
-                element.style.display = 'none';
-            });
-        }
+    dark3.addEventListener('click', function(){
+        hideDoorChoices();
+        performSeek(DARK_DOOR3_START_TIME, false);
+        targetEnd = DARK_DOOR3_END_TIME;
     });
 
-    video2.addEventListener('ended', function() {
-        reloadPage();
+    door2.addEventListener('click', function(){
+        hideDoorChoices();
+        targetEnd = LIGHT_DOOR2_END_TIME;
+        playNow();
     });
 
-    light3.addEventListener('click', function() {
-        if (video3light.style.display === 'none') {
-            video3light.style.display = 'block';
-            lightVideo.style.display = 'none';
-            audio3.play();
-            video3light.play();
-            Array.from(lightchoice).forEach(function(element) {
-                element.style.display = 'none';
-            });
-        }
+    light3.addEventListener('click', function(){
+        hideDoorChoices();
+        performSeek(LIGHT_DOOR3_START_TIME, false);
+        targetEnd = LIGHT_DOOR3_END_TIME;
     });
 
-    video3light.addEventListener('ended', function() {
-        reloadPage();
+    const initialElements = [title, playEnter, skip].filter(Boolean);
+    initialElements.forEach(el => {
+        el.style.display = 'block';
+        el.style.opacity = '0';
     });
-
-    adjustVideoHeight();
-    window.addEventListener('resize', adjustVideoHeight);
-
-    adjustTextPosition();
-    window.addEventListener('resize', adjustTextPosition);
+    setTimeout(function(){ 
+        initialElements.forEach(el => el.style.opacity = '1'); 
+        overlay.style.opacity = '0';
+    }, 500);
 });
