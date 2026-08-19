@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', function() {
     overlay.style.height = '100vh';
     overlay.style.pointerEvents = 'none';
     overlay.style.zIndex = '9999';
-    overlay.style.transition = 'opacity 1s ease';
+    overlay.style.transition = 'opacity 0.5s ease';
     overlay.style.backgroundColor = 'white';
     overlay.style.opacity = '1';
     document.body.appendChild(overlay);
@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const DARK_DOOR3_END_TIME = 299; 
     const LIGHT_PATH_START_TIME = 300; 
     const LIGHT_PATH_CHOICE_TIME = 314.7;
-    const LIGHT_DOOR2_END_TIME = 334; 
+    const LIGHT_DOOR2_END_TIME = 333; 
     const LIGHT_DOOR3_START_TIME = 334; 
     const LIGHT_DOOR3_END_TIME = 362;
 
@@ -115,11 +115,25 @@ document.addEventListener('DOMContentLoaded', function() {
         overlay.style.backgroundColor = color;
         overlay.style.opacity = '1';
         setTimeout(function() {
-            if (actionCallback) actionCallback();
-            setTimeout(function() {
+            if (actionCallback) {
+                const result = actionCallback();
+                if (result && typeof result.then === 'function') {
+                    result.then(function() {
+                        setTimeout(function() {
+                            overlay.style.opacity = '0';
+                        }, 200);
+                    }).catch(function() {
+                        overlay.style.opacity = '0';
+                    });
+                } else {
+                    setTimeout(function() {
+                        overlay.style.opacity = '0';
+                    }, 200);
+                }
+            } else {
                 overlay.style.opacity = '0';
-            }, 300);
-        }, 1000);
+            }
+        }, 500);
     }
 
     function resetToStart(fadeColor = 'white') {
@@ -132,7 +146,7 @@ document.addEventListener('DOMContentLoaded', function() {
         hideDoorChoices();
 
         transitionScreen(fadeColor, function() {
-            performSeek(0, true).then(function() {
+            return performSeek(0, true).then(function() {
                 const introElements = [title, playEnter, skip].filter(Boolean);
                 introElements.forEach(el => el.classList.remove('fade-out'));
                 showElements(introElements);
@@ -163,12 +177,14 @@ document.addEventListener('DOMContentLoaded', function() {
         mainChoiceHandled = true;
         path = null;
 
-        playNow().then(function() {
-            return performSeek(MAIN_CHOICE_TIME, true);
-        }).then(function() {
-            showMainChoices();
-        }).catch(function() {
-            showMainChoices();
+        transitionScreen('white', function() {
+            return playNow().then(function() {
+                return performSeek(MAIN_CHOICE_TIME, true);
+            }).then(function() {
+                showMainChoices();
+            }).catch(function() {
+                showMainChoices();
+            });
         });
 
         setTimeout(function(){ 
