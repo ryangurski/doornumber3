@@ -48,13 +48,17 @@ document.addEventListener('DOMContentLoaded', function() {
     const iframe = document.getElementById('vimeo-iframe');
     const player = new Vimeo.Player(iframe);
 
+    player.ready().then(function() {
+        player.loadVideo(1219583671).catch(function(){});
+    });
+
     function showElements(list) {
         list.forEach(function(el){ 
             if (!el) return;
             el.style.opacity = '0'; 
             el.style.display = 'block'; 
             setTimeout(function(){ 
-                el.style.transition = 'opacity 1s'; 
+                el.style.transition = 'opacity 1s ease'; 
                 el.style.opacity = '1'; 
             }, 100); 
         });
@@ -63,7 +67,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function hideElements(list) {
         list.forEach(function(el){ 
             if (!el) return;
-            el.style.transition = 'opacity 1s'; 
+            el.style.transition = 'opacity 1s ease'; 
             el.style.opacity = '0'; 
             setTimeout(function(){ el.style.display = 'none'; }, 1000); 
         });
@@ -137,42 +141,44 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function resetToStart(fadeColor = 'white') {
-        path = null;
         targetEnd = null;
-        mainChoiceHandled = false;
-        doorChoiceHandled = false;
 
         hideMainChoices();
         hideDoorChoices();
 
         transitionScreen(fadeColor, function() {
             return performSeek(0, true).then(function() {
+                path = null;
+                mainChoiceHandled = false;
+                doorChoiceHandled = false;
+
                 const introElements = [title, playEnter, skip].filter(Boolean);
-                introElements.forEach(el => el.classList.remove('fade-out'));
                 showElements(introElements);
             }).catch(function(){});
         });
     }
 
     playEnter.addEventListener('click', function(){
-        if (title) title.classList.add('fade-out');
-        playEnter.classList.add('fade-out');
-        skip.classList.add('fade-out');
+        const introElements = [title, playEnter, skip].filter(Boolean);
+        introElements.forEach(el => {
+            el.style.transition = 'opacity 1s ease';
+            el.style.opacity = '0';
+        });
         
         playNow();
         player.setCurrentTime(0).catch(function(){});
         
         setTimeout(function(){ 
-            if (playEnter) playEnter.style.display = 'none'; 
-            if (skip) skip.style.display = 'none'; 
-            if (title) title.style.display = 'none'; 
+            introElements.forEach(el => el.style.display = 'none');
         }, 1000);
     });
 
     skip.addEventListener('click', function(){
-        if (title) title.classList.add('fade-out');
-        playEnter.classList.add('fade-out');
-        skip.classList.add('fade-out');
+        const introElements = [title, playEnter, skip].filter(Boolean);
+        introElements.forEach(el => {
+            el.style.transition = 'opacity 1s ease';
+            el.style.opacity = '0';
+        });
         
         mainChoiceHandled = true;
         path = null;
@@ -188,9 +194,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
 
         setTimeout(function(){ 
-            if (playEnter) playEnter.style.display = 'none'; 
-            if (skip) skip.style.display = 'none'; 
-            if (title) title.style.display = 'none'; 
+            introElements.forEach(el => el.style.display = 'none');
         }, 1000);
     });
 
@@ -275,7 +279,10 @@ document.addEventListener('DOMContentLoaded', function() {
         el.style.opacity = '0';
     });
     setTimeout(function(){ 
-        initialElements.forEach(el => el.style.opacity = '1'); 
+        initialElements.forEach(el => {
+            el.style.transition = 'opacity 1s ease';
+            el.style.opacity = '1';
+        }); 
         overlay.style.opacity = '0';
     }, 500);
 });
